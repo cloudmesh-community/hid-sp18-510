@@ -1,0 +1,269 @@
+% status: 0
+% chapter: TBD
+
+\title{Introduction to TensorFlow}
+
+
+\author{Naveen Kaul}
+\orcid{1234-5678-9012}
+\affiliation{%
+  \institution{Indiana University}
+  \streetaddress{P.O. Box 1234}
+  \city{Bloomington} 
+  \state{Indiana} 
+  \postcode{47408}
+}
+\email{nkaul@iu.edu}
+
+
+% The default list of authors is too long for headers}
+\renewcommand{\shortauthors}{N. Kaul}
+
+
+\begin{abstract}
+TensorFlow is an open source library to implement machine
+learning algorithms specifically deep learning algorithms. TensorFlow
+provides both an interface and implementation to execute these
+algorithms using dataflow graphs. Being flexible and cross-platform in
+nature, code built using this library can be implemented and executed
+on a variety of systems, ranging from mobile platforms such as smart
+phones and tablets to large-scale distributed systems comprised of
+thousands of high performance computational devices such as
+GPUs/CPUs. 
+
+\end{abstract}
+
+\keywords{hid-sp18-510, TensorFlow, Deep Learning, Machine Learning,Open Source}
+
+\maketitle
+
+\section{Overview}
+
+\subsection*{History}
+To explore use of large scale deep neural networks, Google Brain
+project, which started in 2011, built a scalable distributed framework
+for training and inference, known as DistBelief. This system and
+framework has been used by various companies under Alphabet across
+both research and commercial
+applications~\cite{hid-sp18-510-tensorflow2015-whitepaper}. 
+
+TensorFlow is a robust and faster production grade version of
+DistBelief that can achieve higher accuracy in generation of neural
+networks. Due to its flexibility and robustness, it has been widely
+used for conducting research and for deploying production grade
+machine learning systems across various areas of computer science and
+other fields, ``including speech/text recognition, computer vision,
+robotics, information retrieval, natural language processing,
+geographic information extraction, and computational drug
+discovery''~\cite{hid-sp18-510-tensorflow2015-whitepaper}. 
+
+
+\subsection*{High level architecture}
+In simpler terms, TensorFlow can be visualized as a python/C++
+implementation of deep learning models. It also has a API layer that
+sits on top of Python/C++ framework, providing easier methods to train
+and evaluate distributed machine learning
+models~\cite{hid-sp18-510-tfblog}. 
+
+TensorFlow takes dataflow graphs as input to perform computations and
+maps these computations onto diverse hardware platforms, ranging from
+mobile device platforms such as Android and iOS to large scale
+distributed systems containing one or many GPU cards. This kind of
+flexibility makes TensorFlow a good candidate for building models for
+research and prototypes and then allowing to easily scale those neural
+networks through usage of parallel execution. 
+
+
+\section{Building Blocks}
+\subsection*{Programming Model}
+A TensorFlow computation is described by a graph-type data structure.
+The graph represents a dataflow computation and is composed of a set
+of nodes, job of a developer would be to write code to build such
+graph, utilizing nodes for state maintenance, decision and looping
+control. These computation graphs can be built using one of supported
+langauges (Python and
+C++)~\cite{hid-sp18-510-tensorflow2015-whitepaper}.   
+
+\subsection*{Operations and Kernels}
+\begin{itemize}
+	\item An operation has a name and attributes, representing a
+computation (e.g., “subtract”, or “add”). All attributes must be
+declared at the time of constructing a graph in order to instantiate a
+node to perform that
+operation~\cite{hid-sp18-510-tensorflow2015-whitepaper}. 
+\item A kernel is an implementation of an operation that is specific to a
+particular type of device (e.g., CPU or GPU). A TensorFlow binary is
+used to define the sets of operations and kernels
+available~\cite{hid-sp18-510-tensorflow2015-whitepaper}.
+\end{itemize}
+\subsection*{Sessions}
+
+To interact with TensorFlow, client programs create a Session. Session
+interface supports two methods, Extend and Run~\cite{hid-sp18-510-notes}. 
+\begin{itemize} 
+	\item Extend method augments initial graph with additional nodes and edges
+	\item Run takes a set of named nodes as argument, that are to be
+computed as well as an optional set of tensors. It then determines all
+the nodes of the graph that are required to compute the requested
+outputs, and performs those operations in an order based on their
+dependencies. In most of the TensorFlow programs, graph is setup once
+within a Session, and then run multiple times. 
+\end{itemize}
+
+\subsection*{Variables} 
+Variables are a special kind of operations
+that return a handle to a persistent mutable tensor, which survives
+across executions of a graph. Handles to these persistent mutable
+tensors can be passed to a handful of special operations, such as
+Assign and AssignAdd that mutate the referenced tensor. For a typical
+model, parameters are usually stored in tensors held in variables,
+that are updated during training the model~\cite{hid-sp18-510-notes}.
+
+\section{Implementation}
+TensorFlow is a cross-platform library and hence its provided API
+separates the user code in different languages from the core
+processing. ``The core TensorFlow library is implemented in C++ for
+portability and performance: it runs on several operating systems
+including Linux, Mac OS X, Windows, Android, and iOS;~the x86 and
+various ARM-based CPU architectures;~and NVIDIA's Kepler, Maxwell, and
+Pascal GPU microarchitectures''~\cite{hid-sp18-510-tensorflow-whitepaper-2}. 
+
+The distributed master divides user requests across a set of tasks. Using
+pruning and partitioning, a graph is divided into sub computations and
+a subgraph is sent to each participating device, these subgraphs are
+cached to be used in subsequent steps. Master applies standard
+optimizations to the computations and also coordinates execution of
+the optimized subgraphs. 
+
+The dataflow executor handles requests from the master for each task,
+and then schedules the execution of the kernels, which contains a
+local subgraph. Current implementations of TensorFlow can execute
+10,000 subgraphs per second, which enables several replicas to
+generate rapid, fine-grained training steps. The dataflow executor is
+also responsible for dispatching kernels to local devices and running
+kernels in parallel when possible, by utilizing multiple CPU cores or
+GPU streams~\cite{hid-sp18-510-tensorflow-whitepaper-2}. 
+
+Implementation differs between single device, multiple device 
+and multiple machines.
+
+\begin{itemize}
+	\item In case of a single worker process with a single device, the nodes of
+the graph are executed in order of their dependencies. Each node is
+polled for number of dependencies to be satisfied and once all
+dependencies are satisfied, node is queued for execution. The queue is
+processed in an unspecified order, delegating the mode's kernel
+execution to a specific device object. Once a node has finished
+processing, count of all nodes that depend on its completion are
+updated. 
+	\item In case of multiple devices, mapping algorithm is used to
+decide which device should handle the computation. The device for
+a computation is selected based on cost model which includes
+simulating the cost of processing a computation on a node based on
+type of device and communication between different devices. Device
+with optimal cost is chosen for the execution. 
+	\item Distributed execution of a graph is very similar to multi-device
+execution with an additional step of creation of a subgraph per device
+after the placement. Data is transmitted between send/receive nodes via TCP or
+RDMA.
+\end{itemize}
+
+\section{Additional Tools}
+TensorFlow also provides some additional tools along with the core implementation of
+deep learning models.
+
+\subsection{Tensor Board}
+TensorBoard is a visualization tool provided by TensorFlow as part of
+its open source release that helps users visualize and comprehend the
+structure of their computation graphs and overall behavior of their
+machine learning models. The visualization provided as part of
+TensorBoard is interactive, where users can zoom and drill down to
+create different
+visualizations~\cite{hid-sp18-510-tensorflow2015-whitepaper}. 
+
+One of the main requirements while training machine learning models
+users have is ability to examine the various aspects of the model, and
+how it changes over time. To help users better understand their models
+and document several metrics, TensorFlow supports different Summary
+operations that can be inserted into the graph such as scalar
+summaries, distribution or image-based summaries. Typically, these
+summaries are calculated as summary nodes for each graph and then
+visualized using TensorBoard
+visualizations~\cite{hid-sp18-510-tensorflow2015-whitepaper}.
+
+TensorBoard can read TensorFlow files that contain summary information
+about the training process, these files can be generated when running
+TensorFlow jobs. TensorBoard can then be used to compare different
+training runs, collect runtime statistics, and generate
+histograms~\cite{hid-sp18-510-tfblog}.
+
+\subsection{Performance Tracing}
+TensorFlow also provides a tool called EEG (not included in the
+initial open source release in November, 2015) that can be used to
+collect and visualize detailed information about the exact ordering
+and performance aspects of the executions of graphs. This tool can be
+utilized to track the performance bottlenecks and rectify any
+efficiency issues with the execution~\cite{hid-sp18-510-tensorflow2015-whitepaper}.
+
+\subsection{TensorFlow Debugger}
+TensorFlow also provides a useful diagnostic tool called TensorFlow
+debugger (tfdbg), this tool helps developers monitor the internal
+structure and states of execution of graphs during training and
+inference that help in debugging and troubleshoot any issues~\cite{hid-sp18-510-tfblog}.
+
+\subsection{TensorFlow Serving}
+With version 1.0.0 TensorFlow also provides an easy to deploy model
+which can be used to move a trained model to production on high
+performance servers for scalable model executions\cite{hid-sp18-510-tfblog}.
+
+\section{Features}
+Some of the salient features of TensorFlow are~\cite{hid-sp18-510-tfblog}
+
+\begin{itemize}
+  \item Scalability and cross-platform deployability
+  \item Portability, since a graph can be executed immediately or saved to use later, 
+  and it can run on multiple platforms: CPUs, GPUs, TPUs, mobile, embedded.
+  \item Optimizable by transforming the graph to produce efficient 
+  version suited to a given platform via various parameters
+  \item Support for distributed execution
+  \item Support of debugging of graphs
+  \item Out of the box learning models - Object detection API,
+sequence-to-sequence model, text processing using ParseySaurus, Image
+stylization using multi-style pastiche generator from Magenta
+Project~\cite{hid-sp18-510-tfblog}.
+  \item Python control flow can be used within TensorFlow APIs
+  for various programing functions: loops, conditionals, functions,
+  closures, etc.
+\end{itemize}
+
+\section{Other Related Technologies}
+Some other open source frameworks or libraries similar to TensorFlow
+have also been developed to perform large scale
+computations~\cite{hid-sp18-510-tensorflow2015-whitepaper}.
+\begin{itemize}
+	\item Theano~\cite{hid-sp18-510-web-theano} 
+	\item Torch~\cite{hid-sp18-510-web-torch}
+	\item Caffe~\cite{hid-sp18-510-web-caffe}
+	\item Chainer~\cite{hid-sp18-510-web-chain}
+	\item Microsoft CNTK~\cite{hid-sp18-510-web-cntk}
+\end{itemize}	
+
+\section{Conclusion}
+
+TensorFlow is a scalable and flexible solution to test and deploy deep learning models 
+across wide variety of systems. TensorFlow is an open source library that was developed by 
+Google Brain group and is not maintained through git hub. TensorFlow can be used to create
+prototypes of deep learning models and then deployed to production grade servers with 
+minimal configuration changes. TensorFlow supports Python and C++ as programming languages
+and uses Graph like data structures to perform computations.
+
+\begin{acks}
+
+  The author would like to thank Dr.~Gregor~von~Laszewski for his
+  support and suggestions to write this paper.
+
+\end{acks}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{report} 
+
