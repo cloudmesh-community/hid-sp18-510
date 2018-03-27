@@ -1,7 +1,7 @@
-% status: 0
-% chapter: TBD
+% status: 100
+% chapter: Deep Learning
 
-\title{Introduction to TensorFlow}
+\title{TensorFlow}
 
 
 \author{Naveen Kaul}
@@ -39,7 +39,7 @@ GPUs/CPUs.
 
 \section{Overview}
 
-\subsection*{History}
+\subsection{History}
 To explore use of large scale deep neural networks, Google Brain
 project, which started in 2011, built a scalable distributed framework
 for training and inference, known as DistBelief. This system and
@@ -58,7 +58,7 @@ geographic information extraction, and computational drug
 discovery''~\cite{hid-sp18-510-tensorflow2015-whitepaper}. 
 
 
-\subsection*{High level architecture}
+\subsection{High level architecture}
 In simpler terms, TensorFlow can be visualized as a python/C++
 implementation of deep learning models. It also has a API layer that
 sits on top of Python/C++ framework, providing easier methods to train
@@ -75,7 +75,7 @@ networks through usage of parallel execution.
 
 
 \section{Building Blocks}
-\subsection*{Programming Model}
+\subsection{Programming Model}
 A TensorFlow computation is described by a graph-type data structure.
 The graph represents a dataflow computation and is composed of a set
 of nodes, job of a developer would be to write code to build such
@@ -84,7 +84,7 @@ control. These computation graphs can be built using one of supported
 langauges (Python and
 C++)~\cite{hid-sp18-510-tensorflow2015-whitepaper}.   
 
-\subsection*{Operations and Kernels}
+\subsection{Operations and Kernels}
 \begin{itemize}
 	\item An operation has a name and attributes, representing a
 computation (e.g., “subtract”, or “add”). All attributes must be
@@ -96,7 +96,7 @@ particular type of device (e.g., CPU or GPU). A TensorFlow binary is
 used to define the sets of operations and kernels
 available~\cite{hid-sp18-510-tensorflow2015-whitepaper}.
 \end{itemize}
-\subsection*{Sessions}
+\subsection{Sessions}
 
 To interact with TensorFlow, client programs create a Session. Session
 interface supports two methods, Extend and Run~\cite{hid-sp18-510-notes}. 
@@ -110,7 +110,7 @@ dependencies. In most of the TensorFlow programs, graph is setup once
 within a Session, and then run multiple times. 
 \end{itemize}
 
-\subsection*{Variables} 
+\subsection{Variables} 
 Variables are a special kind of operations
 that return a handle to a persistent mutable tensor, which survives
 across executions of a graph. Handles to these persistent mutable
