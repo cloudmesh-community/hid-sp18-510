@@ -1,0 +1,56 @@
+% status: 20
+% chapter: TBD
+
+\title{Edge Computing}
+
+
+\author{Naveen Kaul}
+\affiliation{%
+  \institution{Indiana University}
+  \city{Bloomington} 
+  \state{IN} 
+  \postcode{47408}
+  \country{USA}
+}
+\email{nkaul@iu.edu}
+
+% The default list of authors is too long for headers}
+\renewcommand{\shortauthors}{N. Kaul}
+
+
+\begin{abstract}
+Edge computing is commonly described as generation, collection, and
+analysis of data at the actual site, where data is generated as
+opposed to storing and analyzing the data at a centralized location
+like cloud or a data center. This data can be stored in a centralized
+location for a historical purposes, but the main storage and analysis
+is done on site. The technology typically consists of sensor-generated
+data, robotics, automated machines, smartphones and tablets, and
+distributed analytics servers that are used for computing and analysis
+on the spot. In this project we aim to explore a framework built on
+Raspberry Pi cluster that will be used to analyze image data streamed
+by a water propellor via REST services. 
+\end{abstract}
+
+\keywords{hid-sp18-510, Edge Computing, Big Data}
+
+
+\maketitle
+
+\section{Introduction}
+``Edge computing is a method of optimizing cloud computing systems by performing data processing at the edge of the network, near the source of the data''~\cite{hid-sp18-510-edge-wiki}. It is typically used along with IoT (Internet of Things) devices that usually collect data, sometimes in massive amounts. Edge computing allows devices to store and analyze data locally, hence reducing the traffic to the central repository/cloud.
+
+Purpose of this project is to explore this technology and build RESTful services that the IoT device/Robot would use to make specific decisions based on the images captured via on board camera. This project would also implement archiving older images from the local cluster to a centralized cloud location.
+
+
+\section{Implementation steps}
+\begin{itemize}
+	\item Build a hadoop/spark cluster on a cluster of Raspberry Pis.
+	\item Build a REST service to stream images into the local hadoop cluster.
+	\item Build a REST service for analyzing the images, this REST service would be called by the robot to analyze the image and make specific decisions based on the result obtained from the service.
+	\item Build a REST service to push the images older than a specific period from the local hadoop cluster to a cloud (TBD)
+\end{itemize} 
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{report} 
+
