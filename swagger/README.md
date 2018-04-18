@@ -44,6 +44,7 @@ Creator: Harrison, D. and Rubinfeld, D.L.
 * On your terminal, using the Makefile provided run the following commands:
   * `make dirs`
   * `make swagger`
+  * `make train`
   * `make service`
   * `make start`
   * You should see a message like this:
