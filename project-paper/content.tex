@@ -158,7 +158,11 @@ The setup starts from procuring the hardware and then downloading the image file
 Once the image was downloaded from raspberrypi.org, there was some bootstrapping done so that it's easier to log into the Pis in absence of a monitor, also sometime called as headless installation.
 Below changes were done after the image was installed
 Create an SSH file
-Edit wpa\_supplicant.conf file to add WIFI SSID and password so that Pi can connect to Wifi as soon as it powers on. All these steps need to be done after the Pi has been formatted and image has been flashed on to Pi, which can be done easily using Etcher or command line tools.
+Edit wpa\_supplicant.conf file to add WIFI SSID and password so that
+Pi can connect to Wifi as soon as it powers on. All these steps need
+to be done after the Pi has been formatted and image has been flashed
+on to Pi, which can be done easily using Etcher or command line tools.
+
 \begin{verbatim}
 touch /Volumes/boot/ssh
 # This will enable the ssh on Pi
@@ -210,6 +214,7 @@ su hduse
 \end{verbatim}
 
 Run the updates on each Pi and also install required softwares
+
 \begin{verbatim}
 sudo apt-get update
 sudo apt-get upgrade
@@ -250,6 +255,7 @@ Since manually bootstrapping and installing all images is manageable but this ta
 \section{Installing Spark}
 Spark can also be installed correctly from apache website and version used in this project was 2.3.0. One very important thing to keep in mind while installing Spark is that spark needs a lot of memory to work that can not be provided by Raspberry Pi as they only have 1 GB Ram for B+ and even less than that in all other models so there are some configurations that needs to be modified before Spark can function properly.
 spark-env.sh located at \$SPARK\_HOME needs below settings
+
 \begin{verbatim}
 SPARK_MASTER_HOST=pimaster
 SPARK_WORKER_MEMORY=512m
@@ -274,6 +280,7 @@ Default url for spark is
 There are several ways that Spark can be run either through spark-submit or spark-shell mode. In an order for Spark to run in cluster mode, HADOOP\_CONF\_DIR or YARN\_CONF\_DIR need to be set so that Spark processes know how to communicate with Hadoop and Yarn. 
 
 Spark can be started by running
+
 \begin{verbatim}
 $SPARK_HOME/bin/start-master.sh
 $SPARK_HOME/bin/start-slaves.sh
@@ -282,6 +289,7 @@ $SPARK_HOME/bin/start-slaves.sh
 Once started, verification can be done using spark-shell or pyspark commands if the pyspark is installed.
 
 Sample command line view
+
 \begin{verbatim}
 Spark session available as 'spark'.
 Welcome to
@@ -303,10 +311,13 @@ The main topic of this project is to determine whether we can use Raspberry Pi f
 The machine learning algorithm run was a linear regression algorithm to predict the median price of houses in different districts of California. The job took around 1 minute to train on a dataset of 20,000 records, which barely takes seconds when run on a powerful personal computer like Mac or Windows.
 
 \subsection{Predicting House prices }   
+
 Dataset~\cite{hid-sp18-510-dataset} needs to be downloaded from the website directly. This dataset can be stored locally and then loaded in SPARK RDD by running below command
+
 \begin{verbatim}
 rdd = sc.textFile('/path/cal_housing.data')
 \end{verbatim} 
+
 Various commands can be run to analyze contents of the dataset like 
 \begin{itemize}
 \item[$\bullet$] describe()
@@ -322,9 +333,11 @@ standardScaler = StandardScaler(inputCol="features", outputCol="scaled_features"
 scaler = standardScaler.fit(df)
 scaled_df = scaler.transform(df)
 \end{verbatim}
+
 Data can then be split into training and test dataset randomly usually in a 80\%-20\% split, model is trained on 80\% of data while tested on rest of 20\%. 
 
 A few other things that can come handy for machine learning using edge devices are
+
 \begin{itemize}
 \item Using pre-trained model which can be fitted or trained on high performance machines and then deployed on these devices, these devices can then use those models to make predictions and also send any new data back to the central location
 \item MLlib provides an option of online learning where machine learning can also be applied on the data being streamed which can reduce latency and burden on the processing power by taking into account all the data points but at different times.
@@ -356,25 +369,33 @@ Steps required to upload objects in Google Cloud using JSON APIs
 \item[$\bullet$] Add the object's data to the request body.
 \item[$\bullet$] Use cURL to call the JSON API with a POST Object request
 \end{itemize} 
+
 \begin{verbatim}
 curl -X POST --data-binary @file_name \
     -H "Authorization: Bearer Token_Key" \
     -H "Content-Type: Object" \
 \end{verbatim}
+
 \subsection{Command Line Utilities}
+
 Google also provides command line utility called gsutil which can be used to perform several options in cloud storage.
 
 Creating a bucket which is a storage container on Cloud
+
 \begin{verbatim}
 gsutil mb -l us-east1 gs://my-bucket/
 \end{verbatim}
 
 Copying objects from local folder to cloud
+
 \begin{verbatim}
 gsutil cp my-local-folder/my_file gs://my-bucket/my-folder/
 \end{verbatim}
 
 \section{Challenges Faced}
+
+\TODO{CONTENT MISSING HERE}
+
 \subsection{Change in filename from slaves to workers on hadoop3.1.0}
 There has been a change in the file name for defining the host names of slaves and master in Hadoop from 3.1.0, workers file has to be used compare to slaves file in previous versions, this created some confusion and as a result workers not being started on the hadoop cluster.
 \subsection{Spark cluster failing due to memory issues}
