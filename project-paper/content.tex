@@ -96,7 +96,8 @@ Different models available
 \begin{table}[]
 	\centering \caption{Configuration}\label{t:Different Pi Models}
         \begin{tabular}{lllll} 
-        \textbf{Model Name} & \textbf{Processor} & \textbf{Cores} & \textbf{RAM}& \textbf{Price}
+        \textbf{Model Name} & \textbf{Processor} 
+        & \textbf{Cores} & \textbf{RAM}& \textbf{Price}
         \\ Pi Zero & 1GH 32 bit & 1 & 512 MB & \$5
         \\ Pi 1 Model A+ & 700 MHz 32 bit & 1  & 512 MB & \$20
         \\ Pi 1 Model B+ & 700 MHz 32 bit & 1 & 512 MB & \$25
@@ -224,7 +225,7 @@ etc~\cite{hid-sp18-510-mllib2}.
 
 \section{Implementation steps}
 
-\TODO{content missing}
+Below listed are the steps to be implemented as part of this project.
 
 \begin{itemize}
 	\item Build a hadoop/spark cluster on a cluster of Raspberry Pis.
@@ -363,13 +364,10 @@ appropriate and some of them proved to be very important.
 Various websites were used as reference to performing all these
 installs and some of them are listed below.
 
-\TODO{NO URLS IN TEXT, REPLACE WITH CITATIONS}
-
 \begin{itemize}
-\item 
-\url{https://tekmarathon.com/2017/02/15/hadoop-and-spark-installation-on-raspberry-pi-3-cluster-part-2/}
-\item \url{http://tech.marksblogg.com/billion-nyc-taxi-rides-spark-raspberry-pi.html}
-\item \url{https://darrenjw2.wordpress.com/2015/04/17/installing-apache-spark-on-a-raspberry-pi-2/}
+\item tekmarathon~\cite{hid-sp18-510-pisetup-1}
+\item Billion Taxi Rides~\cite{hid-sp18-510-pisetup-2}
+\item Install Spark~\cite{hid-sp18-510-pisetup-3}
 \end{itemize}
 
 \section{Alternatives to using Etcher}
@@ -378,8 +376,6 @@ Since manually bootstrapping and installing all images is manageable
 but this task can become cumbersome if there are a lot of nodes in a
 cluster hence some mechanism of taking back up of Pi images need to be
 explored.
-
-\TODO{NO URLS}
 
 \begin{itemize}
 \item Latest raspbian operating system come preinstalled with
@@ -394,7 +390,7 @@ explored.
 \item There is a command line version of SDCard copier called
   pi-clone, whose source code is available on github, but this should
   be used with caution and used only by very seasoned
-  users~\url{https://github.com/raspberrypi-ui/piclone/blob/master/src/backup}.
+  users~\cite{hid-sp18-510-git}.
 \end{itemize}
 
 \section{Installing Spark}
@@ -405,7 +401,7 @@ mind while installing Spark is that spark needs a lot of memory to
 work that can not be provided by Raspberry Pi as they only have 1 GB
 Ram for B+ and even less than that in all other models so there are
 some configurations that needs to be modified before Spark can
-function properly.  spark-env.sh located at \$SPARK\_HOME needs below
+function properly.~spark-env.sh located at \$SPARK\_HOME needs below
 settings
 
 \begin{verbatim}
@@ -417,8 +413,8 @@ HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 SPARK_DAEMON_MEMORY=512m
 \end{verbatim}
 
-After successful installation of hadoop and spark, their activity can be monitored through the URLs.
-Default url for spark is 
+After successful installation of hadoop and spark, their activity 
+can be monitored through the URLs. Default url for spark is 
 //master-node:8080
 
 \begin{figure}[htbp] 
@@ -495,13 +491,13 @@ rdd = sc.textFile('/path/cal_housing.data')
 \end{verbatim} 
 
 Various commands can be run to analyze contents of the dataset like 
-\begin{itemize}
-\item describe()
-\item collect() Running collect is not advisable since that can take
+\begin{verbatim}
+describe()
+collect() Running collect is not advisable since that can take
   up all the driver memory and cause Spark to fail
-\item show()
-\item take()
-\end{itemize}
+show()
+take()
+\end{verbatim}
 
 Since looking at data it seems that the data is not uniformly
 distributed so it becomes very important as with any other machine
@@ -511,14 +507,18 @@ unit variance and/or scaling data based on the man and standard
 deviation of the dataset.
 
 \begin{verbatim}
-standardScaler = StandardScaler(inputCol="features", outputCol="scaled_features")
+standardScaler = 
+StandardScaler(inputCol="features", outputCol="scaled_features") 
 scaler = standardScaler.fit(df)
 scaled_df = scaler.transform(df)
 \end{verbatim}
 
-Data can then be split into training and test dataset randomly usually in a 80\%-20\% split, model is trained on 80\% of data while tested on rest of 20\%. 
+Data can then be split into training and test dataset randomly 
+usually in a 80\%-20\% split, model is trained on 80\% of data 
+while tested on rest of 20\%. 
 
-A few other things that can come handy for machine learning using edge devices are
+A few other things that can come handy for machine learning using 
+edge devices are
 
 \begin{itemize}
 \item Using pre-trained model which can be fitted or trained on high
@@ -561,7 +561,9 @@ Some of the main products that make sense from the topic at hand are
 
 \subsection{Methods to transfer Data}
 
-\TODO{EMPTY SECTION}
+Google Cloud storage platform provides various ways to transfer data
+between various cloud resources and other servers. These include JSON
+or XML based APIs or even command line utilities to perform such tasks.
 
 \subsection{JSON APIs}
 
@@ -603,7 +605,9 @@ gsutil cp my-local-folder/my_file gs://my-bucket/my-folder/
 
 \section{Challenges Faced}
 
-\TODO{CONTENT MISSING HERE}
+While working on this project, there were several challenges that had
+to be overcome in order to achieve the final goal. Some of them are 
+listed below. 
 
 \subsection{Change in filename from slaves to workers on hadoop 3.1.0}
 
@@ -638,7 +642,11 @@ remotely logging into the server or connecting a monitor to the Pi.
 
 \section{Next Steps}
 
-\TODO{PARAGRAPH MISSING, what next steps, is this paper incomplete?}
+While, this project started with setting up a hadoop and spark cluster
+on raspberry pi, an effort was made to also try various deep learning
+libraries on spark like Keras and TensorFlow but those objectives could 
+not be achieved due to memory limitations of Raspberry Pi. Below are 
+some of ideas that can be used to enhance the project.
 
 \subsection{Running DeepLearning on Pi cluster}
 
@@ -646,6 +654,13 @@ As discussed earlier, running deep learning libraries on Pi cluster
 can be very beneficial from the use case of edge computing so making
 those work successfully is a good step in moving towards broadening
 the usage of Pi.
+
+\subsection{Streaming Data from Sensors}
+Apache Kafka can be easily used to stream data from several add-on sensors 
+on Pi and this data can then be used to perform some actions using the Pi.
+For example, if sensor detects heat, Pi can send a message or email to user
+in order to alert them, similarly a camera can be easily installed on Pi
+and then used for streaming images and making decisions based on the images.
 
 \section{Conclusion}
 
